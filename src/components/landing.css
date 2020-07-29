@@ -1,0 +1,28 @@
+.window {
+    height: 100vh;
+    width: 100%;
+}
+
+.button {
+    width: 200px;
+    margin: 10px;
+}
+
+#container {
+    height: 300px;
+    width: 800px;
+}
+
+.container p {
+    color: red;
+    text-align: center;
+}
+
+.drop-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0;
+    height: 100%;
+    border: 2px dashed #f5f8fa;
+}

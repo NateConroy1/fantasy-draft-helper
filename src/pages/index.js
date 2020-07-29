@@ -1,22 +1,44 @@
-import React from "react"
-import { Link } from "gatsby"
+import React, { useState } from 'react';
+import dataService from '../services';
 
-import Layout from "../components/layout"
-import Image from "../components/image"
-import SEO from "../components/seo"
+import 'normalize.css';
+import '@blueprintjs/core/lib/css/blueprint.css';
+import '@blueprintjs/icons/lib/css/blueprint-icons.css';
 
-const IndexPage = () => (
-  <Layout>
-    <SEO title="Home" />
-    <h1>Hi people</h1>
-    <p>Welcome to your new Gatsby site.</p>
-    <p>Now go build something great.</p>
-    <div style={{ maxWidth: `300px`, marginBottom: `1.45rem` }}>
-      <Image />
-    </div>
-    <Link to="/page-2/">Go to page 2</Link> <br />
-    <Link to="/using-typescript/">Go to "Using TypeScript"</Link>
-  </Layout>
-)
+import Landing from '../components/landing';
 
-export default IndexPage
+window.dataService = dataService;
+
+const IndexPage = () => {
+  const [lists, setLists] = useState(dataService.lists);
+  const [inLanding, setInLanding] = useState(true);
+
+  const onAddList = (name, list) => {
+    setLists(dataService.addList(name, list));
+  };
+
+  const onRemoveList = (index) => {
+    setLists(dataService.deleteList(index));
+  };
+
+  const enterRoom = () => {
+    setInLanding(false);
+  };
+
+  return (
+    <>
+      { inLanding
+        ? (
+          <Landing
+            lists={lists}
+            onAddList={onAddList}
+            onRemoveList={onRemoveList}
+            onDone={enterRoom}
+          />
+        )
+        : <></>}
+    </>
+  );
+};
+
+export default IndexPage;
