@@ -13,10 +13,10 @@ import PropTypes from 'prop-types';
 import parseList from '../util/csvParser';
 import createToast from '../util/createToast';
 
-const toaster = Toaster.create({
+const toaster = (typeof document !== 'undefined') ? Toaster.create({
   position: Position.BOTTOM,
   maxToasts: 5,
-});
+}) : null;
 
 const UploadModal = ({
   file, isOpen, onClose, onSubmit,

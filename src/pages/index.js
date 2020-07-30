@@ -7,7 +7,9 @@ import '@blueprintjs/icons/lib/css/blueprint-icons.css';
 
 import Landing from '../components/landing';
 
-window.dataService = dataService;
+if (typeof window !== 'undefined') {
+  window.dataService = dataService;
+}
 
 const IndexPage = () => {
   const [lists, setLists] = useState(dataService.lists);

@@ -19,10 +19,10 @@ const Window = styled.div`
     background: #30404d;
 `;
 
-const toaster = Toaster.create({
+const toaster = (typeof document !== 'undefined') ? Toaster.create({
   position: Position.BOTTOM,
   maxToasts: 5,
-});
+}) : null;
 
 const Landing = ({
   lists, onAddList, onRemoveList, onDone,
