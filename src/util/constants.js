@@ -2,6 +2,7 @@ export const Columns = {
   NAME: 'name',
   POSITION: 'pos',
   TEAM: 'team',
+  BYE: 'bye',
 };
 
 export const Positions = {

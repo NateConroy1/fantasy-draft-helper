@@ -6,7 +6,6 @@ import styled from 'styled-components';
 import './landing.css';
 import PropTypes from 'prop-types';
 import UploadModal from './uploadModal';
-import parseList from '../util/csvParser';
 import createToast from '../util/createToast';
 
 const Window = styled.div`
@@ -25,7 +24,7 @@ const toaster = (typeof document !== 'undefined') ? Toaster.create({
 }) : null;
 
 const Landing = ({
-  lists, onAddList, onRemoveList, onDone,
+  lists, onAddList, onRemoveList, parseList, onDone,
 }) => {
   const [modalOpen, setModalOpen] = useState(false);
   const [droppedFile, setDroppedFile] = useState(null);
@@ -158,6 +157,7 @@ const Landing = ({
         onClose={() => {
           setModalOpen(false);
         }}
+        parseList={parseList}
         onSubmit={onAddList}
       />
     </>
@@ -168,6 +168,7 @@ Landing.propTypes = {
   lists: PropTypes.arrayOf(PropTypes.object).isRequired,
   onAddList: PropTypes.func.isRequired,
   onRemoveList: PropTypes.func.isRequired,
+  parseList: PropTypes.func.isRequired,
   onDone: PropTypes.func.isRequired,
 };
 

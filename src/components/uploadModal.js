@@ -10,7 +10,6 @@ import {
 } from '@blueprintjs/core';
 import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
-import parseList from '../util/csvParser';
 import createToast from '../util/createToast';
 
 const toaster = (typeof document !== 'undefined') ? Toaster.create({
@@ -19,7 +18,7 @@ const toaster = (typeof document !== 'undefined') ? Toaster.create({
 }) : null;
 
 const UploadModal = ({
-  file, isOpen, onClose, onSubmit,
+  file, isOpen, onClose, parseList, onSubmit,
 }) => {
   const [isParsingFile, setIsParsingFile] = useState(false);
   const [uploadedFile, setUploadedFile] = useState(file);
@@ -122,6 +121,7 @@ UploadModal.propTypes = {
   }),
   isOpen: PropTypes.bool.isRequired,
   onClose: PropTypes.func.isRequired,
+  parseList: PropTypes.func.isRequired,
   onSubmit: PropTypes.func.isRequired,
 };
 

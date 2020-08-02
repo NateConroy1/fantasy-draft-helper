@@ -1,0 +1,7 @@
+#window {
+    margin-right: 70px;
+}
+
+.ranking-table {
+    height: calc(100% - 3em);
+}
