@@ -75,28 +75,30 @@ class DataService {
     }
 
     // parse each line
-    const list = { type: null, players: {}, data: [] };
+    const list = { positions: {}, players: {}, rankings: { ALL: [] } };
     for (let i = 1; i < lines.length; i++) {
       const line = lines[i].trim().split(',');
       if (line.length > Math.max(nameCol, posCol, teamCol, byeCol)) {
-        if (list.type === null) {
-          list.type = line[posCol];
-        } else if (list.type !== Positions.ALL && list.type !== line[posCol]) {
-          list.type = Positions.ALL;
-        }
+        const position = line[posCol].replace(/[0-9]/g, '');
         const name = line[nameCol];
-        list.players[name] = 1;
-        list.data.push({
+        const entry = {
           rank: i,
           name,
-          position: line[posCol],
+          position,
           team: line[teamCol],
           bye: line[byeCol],
-        });
+        };
+        list.positions[position] = true;
+        list.players[name] = 1;
+        if (!list.rankings.hasOwnProperty(position)) {
+          list.rankings[position] = [];
+        }
+        list.rankings[position].push(entry);
+        list.rankings.ALL.push(entry);
       }
     }
 
-    if (list.data.length < 0) {
+    if (list.rankings.ALL.length === 0) {
       onError('List is empty');
       return null;
     }
