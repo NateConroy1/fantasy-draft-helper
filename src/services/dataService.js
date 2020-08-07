@@ -1,15 +1,20 @@
-import { Columns, Positions } from '../util/constants';
+import { Columns, RankingListsKey, PlayersKey } from '../util/constants';
 
 class DataService {
   constructor() {
-    this.lists = [];
-    this.players = {};
+    const storedLists = this._retrieveFromLocalStorage(RankingListsKey);
+    const storedPlayers = this._retrieveFromLocalStorage(PlayersKey);
+
+    this.lists = (storedLists === null ? [] : storedLists);
+    this.players = (storedPlayers === null ? {} : storedPlayers);
 
     this.addPlayers = this.addPlayers.bind(this);
     this.toggleDrafted = this.toggleDrafted.bind(this);
     this.addList = this.addList.bind(this);
     this.deleteList = this.deleteList.bind(this);
     this.parseList = this.parseList.bind(this);
+    this._updateLocalStorage = this._updateLocalStorage.bind(this);
+    this._retrieveFromLocalStorage = this._retrieveFromLocalStorage.bind(this);
   }
 
   addPlayers(players) {
@@ -18,11 +23,13 @@ class DataService {
         this.players[name] = true;
       }
     });
+    this._updateLocalStorage(PlayersKey, this.players);
   }
 
   toggleDrafted(player) {
     if (this.players.hasOwnProperty(player)) {
       this.players[player] = !this.players[player];
+      this._updateLocalStorage(PlayersKey, this.players);
     }
   }
 
@@ -30,10 +37,12 @@ class DataService {
     const newName = name === '' ? `List ${this.lists.length + 1}` : name;
     this.lists.push({ name: newName, list });
     this.addPlayers(list.players);
+    this._updateLocalStorage(RankingListsKey, this.lists);
   }
 
   deleteList(index) {
     this.lists.splice(index, 1);
+    this._updateLocalStorage(RankingListsKey, this.lists);
   }
 
   parseList(text, onError) {
@@ -104,6 +113,16 @@ class DataService {
     }
 
     return list;
+  }
+
+  _updateLocalStorage(key, object) {
+    localStorage.setItem(key, JSON.stringify(object));
+  }
+
+  _retrieveFromLocalStorage(key) {
+    const object = localStorage.getItem(key);
+    if (object === null) return null;
+    return JSON.parse(object);
   }
 }
 

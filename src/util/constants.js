@@ -14,3 +14,6 @@ export const Positions = {
   DST: 'DST',
   K: 'K',
 };
+
+export const RankingListsKey = 'rankingLists';
+export const PlayersKey = 'playersKey';
