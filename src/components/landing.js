@@ -1,22 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import {
-  HTMLTable, Button, Card, FormGroup, Intent, ButtonGroup, Toaster, Position, Spinner,
+  HTMLTable, Button, Card, FormGroup, Intent, ButtonGroup, Toaster, Position,
 } from '@blueprintjs/core';
-import styled from 'styled-components';
 import './landing.css';
 import PropTypes from 'prop-types';
 import UploadModal from './uploadModal';
 import createToast from '../util/createToast';
-
-const Window = styled.div`
-    width: 100%;
-    height: 100vh;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    background: #30404d;
-`;
+import Layout from './layout';
 
 const toaster = (typeof document !== 'undefined') ? Toaster.create({
   position: Position.BOTTOM,
@@ -84,11 +74,20 @@ const Landing = ({
 
   return (
     <>
-      <div className="bp3-dark">
-        <Window>
-          <FormGroup>
+      <Layout>
+        <div
+          className="bp3-dark"
+          style={{
+            display: 'flex',
+            flexDirection: 'column',
+            height: '100%',
+          }}
+        >
+          <FormGroup style={{ margin: 'auto' }}>
             <Card
-              style={dragEnterCount > 0 ? { backgroundColor: 'rgba(255,255,255,.4)' } : null}
+              style={dragEnterCount > 0
+                ? { backgroundColor: '#5C7080' }
+                : { background: '#30404D' }}
             >
               <div
                 id="container"
@@ -106,12 +105,19 @@ const Landing = ({
                     </div>
                   )
                   : (
-                    <HTMLTable className="table">
+                    <HTMLTable striped className="table">
+                      <thead>
+                        <tr>
+                          <th>Imported Lists</th>
+                        </tr>
+                      </thead>
                       <tbody>
                         {lists.map((event, index) => (
                           <tr key={index}>
                             <td className="table-cell">
                               {event.name}
+                            </td>
+                            <td>
                               <ButtonGroup minimal style={{ marginLeft: '10px' }}>
                                 <Button
                                   icon="edit"
@@ -132,36 +138,34 @@ const Landing = ({
                   )}
               </div>
             </Card>
+            <FormGroup style={{ paddingTop: '1em', alignItems: 'center' }}>
+              <Button
+                className="button"
+                large
+                icon="import"
+                onClick={() => {
+                  setModalOpen(true);
+                }}
+              >
+                Import CSVs
+              </Button>
+              <Button
+                large
+                className="button"
+                disabled={lists.length === 0}
+                intent={Intent.SUCCESS}
+                icon="tick"
+                onClick={() => {
+                  setLoading(true);
+                }}
+                loading={loading}
+              >
+                Done
+              </Button>
+            </FormGroup>
           </FormGroup>
-
-          <FormGroup>
-            <Button
-              className="button"
-              large
-              icon="import"
-              onClick={() => {
-                setModalOpen(true);
-              }}
-            >
-              Import CSVs
-            </Button>
-            <Button
-              large
-              className="button"
-              disabled={lists.length === 0}
-              intent={Intent.SUCCESS}
-              icon={loading ? null : 'tick'}
-              onClick={() => {
-                setLoading(true);
-              }}
-            >
-              {loading
-                ? <Spinner size={20} intent={Intent.SUCCESS} />
-                : 'Done'}
-            </Button>
-          </FormGroup>
-        </Window>
-      </div>
+        </div>
+      </Layout>
       <UploadModal
         file={droppedFile}
         isOpen={modalOpen}

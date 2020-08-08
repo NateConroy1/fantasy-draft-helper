@@ -8,14 +8,14 @@
     margin: 10px;
 }
 
+.table {
+    width: 100%;
+}
+
 #container {
     height: 300px;
     width: 800px;
-}
-
-.container p {
-    color: red;
-    text-align: center;
+    overflow: auto;
 }
 
 .drop-container {
@@ -24,5 +24,6 @@
     justify-content: center;
     margin: 0;
     height: 100%;
+    font-size: medium;
     border: 2px dashed #f5f8fa;
 }
