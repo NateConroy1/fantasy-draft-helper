@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import dataService from '../services';
 
 import 'normalize.css';
@@ -50,7 +50,14 @@ const IndexPage = () => {
             onDone={enterRoom}
           />
         )
-        : <Main lists={lists} players={players} toggleDrafted={toggleDrafted} />}
+        : (
+          <Main
+            lists={lists}
+            aggregatedList={dataService.aggregatedList}
+            players={players}
+            toggleDrafted={toggleDrafted}
+          />
+        )}
     </>
   );
 };

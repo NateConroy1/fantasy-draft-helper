@@ -16,16 +16,21 @@ const RankingList = ({
   const [columnWidths, setColumnWidths] = useState([200, 67, 67, 67, 67]);
   const [hideDraftedPlayers, setHideDraftedPlayers] = useState(false);
   const [filterOptions, setFilterOptions] = useState([]);
-  const [currentList, setCurrentList] = useState(list.rankings.ALL);
+  const [currentList, setCurrentList] = useState(
+    list.hasOwnProperty(Positions.ALL)
+      ? list[Positions.ALL]
+      : list[Object.keys(list)[0]],
+  );
 
   useEffect(() => {
     const positions = [];
-    Object.keys(list.positions).forEach((position) => {
-      positions.push(position);
+    Object.keys(list).forEach((position) => {
+      if (position === Positions.ALL) {
+        positions.unshift(position);
+      } else {
+        positions.push(position);
+      }
     });
-    if (positions.length > 1) {
-      positions.unshift(Positions.ALL);
-    }
     setFilterOptions(positions);
   }, [list]);
 
@@ -36,17 +41,17 @@ const RankingList = ({
 
   const tableCell = (row, type) => {
     const player = currentList[row];
-    const available = players[player.name];
+    const { available } = players[player.name];
     return (<Cell style={available ? null : takenStyle}>{player[type]}</Cell>);
   };
 
   const toggleCell = (row) => {
     const player = currentList[row];
-    const available = players[player.name];
+    const { available } = players[player.name];
     return (
       <Cell style={available ? null : takenStyle}>
         <Switch
-          checked={players[player.name]}
+          checked={available}
           onChange={() => {
             toggleDrafted(player.name);
           }}
@@ -69,7 +74,7 @@ const RankingList = ({
           <HTMLSelect
             options={filterOptions}
             onChange={(event) => {
-              setCurrentList(list.rankings[event.target.value]);
+              setCurrentList(list[event.target.value]);
             }}
           />
         </Navbar.Group>

@@ -16,4 +16,5 @@ export const Positions = {
 };
 
 export const RankingListsKey = 'rankingLists';
+export const AggregatedListKey = 'aggregatedList';
 export const PlayersKey = 'playersKey';

@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
-  HTMLTable, Button, Card, FormGroup, Intent, ButtonGroup, Toaster, Position,
+  HTMLTable, Button, Card, FormGroup, Intent, ButtonGroup, Toaster, Position, Spinner,
 } from '@blueprintjs/core';
 import styled from 'styled-components';
 import './landing.css';
@@ -29,6 +29,13 @@ const Landing = ({
   const [modalOpen, setModalOpen] = useState(false);
   const [droppedFile, setDroppedFile] = useState(null);
   const [dragEnterCount, setDragEnterCount] = useState(0);
+  const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    if (loading) {
+      onDone();
+    }
+  }, [loading]);
 
   const dragOver = (e) => {
     e.preventDefault();
@@ -143,10 +150,14 @@ const Landing = ({
               className="button"
               disabled={lists.length === 0}
               intent={Intent.SUCCESS}
-              icon="tick"
-              onClick={onDone}
+              icon={loading ? null : 'tick'}
+              onClick={() => {
+                setLoading(true);
+              }}
             >
-              Done
+              {loading
+                ? <Spinner size={20} intent={Intent.SUCCESS} />
+                : 'Done'}
             </Button>
           </FormGroup>
         </Window>
