@@ -74,7 +74,7 @@ const Landing = ({
 
   return (
     <>
-      <Layout>
+      <Layout emptyNav>
         <div
           className="bp3-dark"
           style={{

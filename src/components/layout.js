@@ -1,12 +1,33 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-
-import Header from './header';
 import './layout.css';
+import {
+  Alignment, Button, Navbar,
+} from '@blueprintjs/core';
+import PlayerSearch from './playerSearch';
 
-const Layout = ({ children }) => (
+const Layout = ({
+  children, emptyNav, players, toggleDrafted,
+}) => (
   <>
-    <Header />
+    <Navbar className="bp3-dark bp3-fixed-top">
+      <Navbar.Group align={Alignment.LEFT}>
+        <Navbar.Heading>Fantasy Draft Helper</Navbar.Heading>
+      </Navbar.Group>
+      {emptyNav ? null : (
+        <>
+          <Navbar.Group align={Alignment.LEFT}>
+            <Navbar.Divider />
+            <PlayerSearch players={players} toggleDrafted={toggleDrafted} />
+          </Navbar.Group>
+          <Navbar.Group align={Alignment.RIGHT}>
+            <Button className="bp3-minimal" icon="user" />
+            <Button className="bp3-minimal" icon="notifications" />
+            <Button className="bp3-minimal" icon="cog" />
+          </Navbar.Group>
+        </>
+      )}
+    </Navbar>
     <div
       style={{
         height: '100vh',

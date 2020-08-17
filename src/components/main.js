@@ -5,7 +5,7 @@ import RankingList from './ranking';
 const Main = ({
   lists, aggregatedList, players, toggleDrafted,
 }) => (
-  <Layout>
+  <Layout players={players} toggleDrafted={toggleDrafted}>
     <div style={{ display: 'flex', flexDirection: 'row', height: '100%' }}>
       <RankingList key="aggregated-rankings" listName="Aggregated Rankings" list={aggregatedList} players={players} toggleDrafted={toggleDrafted} />
       {lists.map((list, index) => (
