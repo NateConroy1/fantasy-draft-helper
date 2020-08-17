@@ -19,6 +19,7 @@ const Landing = ({
   const [modalOpen, setModalOpen] = useState(false);
   const [droppedFile, setDroppedFile] = useState(null);
   const [dragEnterCount, setDragEnterCount] = useState(0);
+  const [listCount, setListCount] = useState(0);
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
@@ -26,6 +27,11 @@ const Landing = ({
       onDone();
     }
   }, [loading]);
+
+  useEffect(() => {
+    console.log('HERE WE ARE');
+    setListCount(lists.length);
+  }, [lists]);
 
   const dragOver = (e) => {
     e.preventDefault();
@@ -96,7 +102,7 @@ const Landing = ({
                 onDragLeave={dragLeave}
                 onDrop={fileDrop}
               >
-                { lists.length === 0
+                { listCount === 0
                   ? (
                     <div
                       className="drop-container"
@@ -152,7 +158,7 @@ const Landing = ({
               <Button
                 large
                 className="button"
-                disabled={lists.length === 0}
+                disabled={listCount === 0}
                 intent={Intent.SUCCESS}
                 icon="tick"
                 onClick={() => {
