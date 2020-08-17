@@ -219,11 +219,16 @@ class DataService {
   }
 
   _updateLocalStorage(key, object) {
-    localStorage.setItem(key, JSON.stringify(object));
+    if (typeof window !== 'undefined') {
+      localStorage.setItem(key, JSON.stringify(object));
+    }
   }
 
   _retrieveFromLocalStorage(key) {
-    const object = localStorage.getItem(key);
+    let object = null;
+    if (typeof window !== 'undefined') {
+      object = localStorage.getItem(key);
+    }
     if (object === null) return null;
     return JSON.parse(object);
   }
