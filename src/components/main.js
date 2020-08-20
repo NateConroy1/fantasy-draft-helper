@@ -4,7 +4,7 @@ import RankingList from './ranking';
 import RenameDialog from './renameDialog';
 
 const Main = ({
-  lists, aggregatedList, players, toggleDrafted, onRenameList,
+  lists, aggregatedList, players, toggleDrafted, onRenameList, onReset,
 }) => {
   // list renaming
   const [renamingList, setRenamingList] = useState(false);
@@ -13,7 +13,7 @@ const Main = ({
 
   return (
     <>
-      <Layout players={players} toggleDrafted={toggleDrafted}>
+      <Layout players={players} toggleDrafted={toggleDrafted} onReset={onReset}>
         <div style={{ display: 'flex', flexDirection: 'row', height: '100%' }}>
           <RankingList key="aggregated-rankings" listName="Aggregated Rankings" list={aggregatedList} players={players} toggleDrafted={toggleDrafted} />
           {lists.map((list, index) => (

@@ -7,7 +7,7 @@ import {
 import PlayerSearch from './playerSearch';
 
 const Layout = ({
-  children, emptyNav, players, toggleDrafted,
+  children, emptyNav, players, toggleDrafted, onReset,
 }) => (
   <>
     <Navbar className="bp3-dark bp3-fixed-top">
@@ -22,7 +22,7 @@ const Layout = ({
           </Navbar.Group>
           <Navbar.Group align={Alignment.RIGHT}>
             <Tooltip content="reset">
-              <Button disabled minimal icon="reset" />
+              <Button minimal icon="reset" onClick={onReset} />
             </Tooltip>
           </Navbar.Group>
         </>

@@ -46,6 +46,11 @@ const IndexPage = () => {
     setPlayers({ ...dataService.players });
   };
 
+  const resetPlayers = () => {
+    dataService.resetPlayers();
+    setPlayers({ ...dataService.players });
+  };
+
   return (
     <>
       { inLanding
@@ -66,6 +71,7 @@ const IndexPage = () => {
             players={players}
             toggleDrafted={toggleDrafted}
             onRenameList={onRenameList}
+            onReset={resetPlayers}
           />
         )}
     </>

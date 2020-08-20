@@ -16,6 +16,7 @@ class DataService {
     this.toggleDrafted = this.toggleDrafted.bind(this);
     this.addList = this.addList.bind(this);
     this.deleteList = this.deleteList.bind(this);
+    this.renameList = this.renameList.bind(this);
     this.parseList = this.parseList.bind(this);
     this._buildAggregatedList = this._buildAggregatedList.bind(this);
     this._updatePlayersDict = this._updatePlayersDict.bind(this);
@@ -46,6 +47,22 @@ class DataService {
   renameList(index, name) {
     this.lists[index].name = name;
     this._updateLocalStorage(RankingListsKey, this.lists);
+  }
+
+  resetPlayers() {
+    const playersToDelete = [];
+    Object.keys(this.players).forEach((name) => {
+      // reset player availability
+      this.players[name].available = true;
+      // if player isn't contained in any of the lists, safe to delete
+      if (this.players[name].posCount < 1) {
+        playersToDelete.push(name);
+      }
+    });
+    playersToDelete.forEach((name) => {
+      delete this.players[name];
+    });
+    this._updateLocalStorage(PlayersKey, this.players);
   }
 
   parseList(text, onError) {
