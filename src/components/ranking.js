@@ -1,17 +1,17 @@
 import React, { useEffect, useState } from 'react';
 import {
-  Alignment, Checkbox, HTMLSelect, Navbar, Switch,
+  Alignment, Button, Checkbox, HTMLSelect, Navbar, Switch,
 } from '@blueprintjs/core';
 import {
   Cell, Column, RenderMode, Table,
 } from '@blueprintjs/table';
-import './ranking.css';
 import { Positions } from '../util/constants';
+import './ranking.css';
 
 const takenStyle = { backgroundColor: '#CED9E0', textDecoration: 'line-through' };
 
 const RankingList = ({
-  listName, list, players, toggleDrafted,
+  listName, list, players, toggleDrafted, renameAllowed, onRename,
 }) => {
   const [columnWidths, setColumnWidths] = useState([200, 67, 67, 67, 67]);
   const [hideDraftedPlayers, setHideDraftedPlayers] = useState(false);
@@ -70,6 +70,7 @@ const RankingList = ({
       <Navbar>
         <Navbar.Group align={Alignment.LEFT}>
           <Navbar.Heading>{listName}</Navbar.Heading>
+          {renameAllowed ? <Button minimal small icon="edit" onClick={onRename} /> : null}
           <Navbar.Divider />
           <HTMLSelect
             options={filterOptions}
@@ -80,6 +81,7 @@ const RankingList = ({
         </Navbar.Group>
         <Navbar.Group align={Alignment.RIGHT}>
           <Checkbox
+            disabled
             checked={hideDraftedPlayers}
             label="Hide drafted players"
             style={{ margin: '0' }}

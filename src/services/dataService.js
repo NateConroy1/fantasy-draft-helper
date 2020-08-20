@@ -43,6 +43,11 @@ class DataService {
     this._updatePlayersDict();
   }
 
+  renameList(index, name) {
+    this.lists[index].name = name;
+    this._updateLocalStorage(RankingListsKey, this.lists);
+  }
+
   parseList(text, onError) {
     const lines = text.replace(/"/g, '').split('\n');
     const headers = lines[0].trim().split(',');

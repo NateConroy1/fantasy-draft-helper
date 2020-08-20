@@ -7,6 +7,7 @@ import PropTypes from 'prop-types';
 import UploadModal from './uploadModal';
 import createToast from '../util/createToast';
 import Layout from './layout';
+import RenameDialog from './renameDialog';
 
 const toaster = (typeof document !== 'undefined') ? Toaster.create({
   position: Position.BOTTOM,
@@ -14,13 +15,18 @@ const toaster = (typeof document !== 'undefined') ? Toaster.create({
 }) : null;
 
 const Landing = ({
-  lists, onAddList, onRemoveList, parseList, onDone,
+  lists, onAddList, onRemoveList, onRenameList, parseList, onDone,
 }) => {
   const [modalOpen, setModalOpen] = useState(false);
   const [droppedFile, setDroppedFile] = useState(null);
   const [dragEnterCount, setDragEnterCount] = useState(0);
   const [listCount, setListCount] = useState(0);
   const [loading, setLoading] = useState(false);
+
+  // list renaming
+  const [renamingList, setRenamingList] = useState(false);
+  const [listName, setListName] = useState('');
+  const [renamingListIdx, setRenamingListIdx] = useState(-1);
 
   useEffect(() => {
     if (loading) {
@@ -29,7 +35,6 @@ const Landing = ({
   }, [loading]);
 
   useEffect(() => {
-    console.log('HERE WE ARE');
     setListCount(lists.length);
   }, [lists]);
 
@@ -127,6 +132,11 @@ const Landing = ({
                               <ButtonGroup minimal style={{ marginLeft: '10px' }}>
                                 <Button
                                   icon="edit"
+                                  onClick={() => {
+                                    setListName(event.name);
+                                    setRenamingListIdx(index);
+                                    setRenamingList(true);
+                                  }}
                                 />
                                 <Button
                                   intent={Intent.DANGER}
@@ -181,6 +191,17 @@ const Landing = ({
         parseList={parseList}
         onSubmit={onAddList}
       />
+      <RenameDialog
+        isOpen={renamingList}
+        currentName={listName}
+        onClose={() => {
+          setRenamingList(false);
+        }}
+        onSubmit={(newName) => {
+          onRenameList(renamingListIdx, newName);
+          setRenamingList(false);
+        }}
+      />
     </>
   );
 };
@@ -189,6 +210,7 @@ Landing.propTypes = {
   lists: PropTypes.arrayOf(PropTypes.object).isRequired,
   onAddList: PropTypes.func.isRequired,
   onRemoveList: PropTypes.func.isRequired,
+  onRenameList: PropTypes.func.isRequired,
   parseList: PropTypes.func.isRequired,
   onDone: PropTypes.func.isRequired,
 };

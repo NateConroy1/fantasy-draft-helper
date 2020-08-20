@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import './layout.css';
 import {
-  Alignment, Button, Navbar,
+  Alignment, Button, Navbar, Tooltip,
 } from '@blueprintjs/core';
 import PlayerSearch from './playerSearch';
 
@@ -21,9 +21,9 @@ const Layout = ({
             <PlayerSearch players={players} toggleDrafted={toggleDrafted} />
           </Navbar.Group>
           <Navbar.Group align={Alignment.RIGHT}>
-            <Button className="bp3-minimal" icon="user" />
-            <Button className="bp3-minimal" icon="notifications" />
-            <Button className="bp3-minimal" icon="cog" />
+            <Tooltip content="reset">
+              <Button disabled minimal icon="reset" />
+            </Tooltip>
           </Navbar.Group>
         </>
       )}
