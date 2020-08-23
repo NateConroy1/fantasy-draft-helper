@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { FocusStyleManager } from '@blueprintjs/core';
 import dataService from '../services';
 
@@ -50,6 +50,12 @@ const IndexPage = () => {
     dataService.resetPlayers();
     setPlayers({ ...dataService.players });
   };
+
+  useEffect(() => {
+    if (lists.length === 0 && !inLanding) {
+      setInLanding(true);
+    }
+  }, [lists]);
 
   return (
     <>
