@@ -16,11 +16,26 @@ const RankingList = ({
   const [columnWidths, setColumnWidths] = useState([200, 67, 67, 67, 67]);
   const [hideDraftedPlayers, setHideDraftedPlayers] = useState(false);
   const [filterOptions, setFilterOptions] = useState([]);
-  const [currentList, setCurrentList] = useState(
+  const [currentListType, setCurrentListType] = useState(
     list.hasOwnProperty(Positions.ALL)
-      ? list[Positions.ALL]
-      : list[Object.keys(list)[0]],
+      ? Positions.ALL
+      : Object.keys(list)[0],
   );
+  const [currentList, setCurrentList] = useState(list[currentListType]);
+
+  const updateVisibleList = () => {
+    if (hideDraftedPlayers) {
+      const availableOnlyList = [];
+      list[currentListType].forEach((player) => {
+        if (players[player.name].available) {
+          availableOnlyList.push(player);
+        }
+      });
+      setCurrentList(availableOnlyList);
+    } else {
+      setCurrentList(list[currentListType]);
+    }
+  };
 
   useEffect(() => {
     const positions = [];
@@ -33,6 +48,10 @@ const RankingList = ({
     });
     setFilterOptions(positions);
   }, [list]);
+
+  useEffect(() => {
+    updateVisibleList();
+  }, [players, currentListType, hideDraftedPlayers]);
 
   const resizeColumn = (index, width) => {
     columnWidths[index] = width;
@@ -75,13 +94,12 @@ const RankingList = ({
           <HTMLSelect
             options={filterOptions}
             onChange={(event) => {
-              setCurrentList(list[event.target.value]);
+              setCurrentListType(event.target.value);
             }}
           />
         </Navbar.Group>
         <Navbar.Group align={Alignment.RIGHT}>
           <Checkbox
-            disabled
             checked={hideDraftedPlayers}
             label="Hide drafted players"
             style={{ margin: '0' }}
