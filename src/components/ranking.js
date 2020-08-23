@@ -116,6 +116,7 @@ const RankingList = ({
           resizeColumn(i, size);
         }}
         renderMode={RenderMode.NONE}
+        key={currentList.length}
       >
         <Column
           name="Name"
