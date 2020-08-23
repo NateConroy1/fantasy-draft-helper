@@ -60,7 +60,6 @@ const IndexPage = () => {
             onAddList={onAddList}
             onRemoveList={onRemoveList}
             onRenameList={onRenameList}
-            parseList={dataService.parseList}
             onDone={enterRoom}
           />
         )
@@ -69,9 +68,11 @@ const IndexPage = () => {
             lists={lists}
             aggregatedList={dataService.aggregatedList}
             players={players}
-            toggleDrafted={toggleDrafted}
+            onAddList={onAddList}
+            onRemoveList={onRemoveList}
             onRenameList={onRenameList}
             onReset={resetPlayers}
+            toggleDrafted={toggleDrafted}
           />
         )}
     </>

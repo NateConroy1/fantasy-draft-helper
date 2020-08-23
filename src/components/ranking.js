@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import {
-  Alignment, Button, Checkbox, HTMLSelect, Navbar, Switch,
+  Alignment, Button, Checkbox, HTMLSelect, Intent, Navbar, Switch,
 } from '@blueprintjs/core';
 import {
   Cell, Column, RenderMode, Table,
@@ -11,7 +11,7 @@ import './ranking.css';
 const takenStyle = { backgroundColor: '#CED9E0', textDecoration: 'line-through' };
 
 const RankingList = ({
-  listName, list, players, toggleDrafted, renameAllowed, onRename,
+  listName, list, players, toggleDrafted, editable, onRename, onRemove,
 }) => {
   const [columnWidths, setColumnWidths] = useState([200, 67, 67, 67, 67]);
   const [hideDraftedPlayers, setHideDraftedPlayers] = useState(false);
@@ -89,7 +89,7 @@ const RankingList = ({
       <Navbar>
         <Navbar.Group align={Alignment.LEFT}>
           <Navbar.Heading>{listName}</Navbar.Heading>
-          {renameAllowed ? <Button minimal small icon="edit" onClick={onRename} /> : null}
+          {editable ? <Button minimal small icon="edit" onClick={onRename} /> : null}
           <Navbar.Divider />
           <HTMLSelect
             options={filterOptions}
@@ -105,6 +105,17 @@ const RankingList = ({
             style={{ margin: '0' }}
             onChange={() => { setHideDraftedPlayers(!hideDraftedPlayers); }}
           />
+          {editable
+            ? (
+              <Button
+                small
+                minimal
+                icon="cross"
+                intent={Intent.DANGER}
+                style={{ marginLeft: '1em' }}
+                onClick={onRemove}
+              />
+            ) : null}
         </Navbar.Group>
       </Navbar>
 

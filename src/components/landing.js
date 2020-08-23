@@ -8,6 +8,7 @@ import UploadModal from './uploadModal';
 import createToast from '../util/createToast';
 import Layout from './layout';
 import RenameDialog from './renameDialog';
+import dataService from '../services';
 
 const toaster = (typeof document !== 'undefined') ? Toaster.create({
   position: Position.BOTTOM,
@@ -15,7 +16,7 @@ const toaster = (typeof document !== 'undefined') ? Toaster.create({
 }) : null;
 
 const Landing = ({
-  lists, onAddList, onRemoveList, onRenameList, parseList, onDone,
+  lists, onAddList, onRemoveList, onRenameList, onDone,
 }) => {
   const [modalOpen, setModalOpen] = useState(false);
   const [droppedFile, setDroppedFile] = useState(null);
@@ -70,7 +71,7 @@ const Landing = ({
 
     const fr = new FileReader();
     fr.onload = () => {
-      const list = parseList(fr.result, (error) => {
+      const list = dataService.parseList(fr.result, (error) => {
         createToast(toaster, Intent.DANGER, error);
       });
 
@@ -188,7 +189,7 @@ const Landing = ({
         onClose={() => {
           setModalOpen(false);
         }}
-        parseList={parseList}
+        parseList={dataService.parseList}
         onSubmit={onAddList}
       />
       <RenameDialog
@@ -211,7 +212,6 @@ Landing.propTypes = {
   onAddList: PropTypes.func.isRequired,
   onRemoveList: PropTypes.func.isRequired,
   onRenameList: PropTypes.func.isRequired,
-  parseList: PropTypes.func.isRequired,
   onDone: PropTypes.func.isRequired,
 };
 
