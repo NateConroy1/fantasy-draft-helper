@@ -61,7 +61,7 @@ const RankingList = ({
   const tableCell = (row, type) => {
     const player = currentList[row];
     const { available } = players[player.name];
-    return (<Cell style={available ? null : takenStyle}>{player[type]}</Cell>);
+    return (<Cell className="ranking-text-cell" style={available ? null : takenStyle}>{player[type]}</Cell>);
   };
 
   const toggleCell = (row) => {
@@ -117,6 +117,7 @@ const RankingList = ({
       <Table
         className="ranking-table"
         numRows={currentList.length}
+        defaultRowHeight={22}
         columnWidths={columnWidths}
         onColumnWidthChanged={(i, size) => {
           resizeColumn(i, size);
@@ -125,19 +126,19 @@ const RankingList = ({
         key={currentList.length}
       >
         <Column
-          name="Name"
+          nameRenderer={() => (<strong>Name</strong>)}
           cellRenderer={(row) => (tableCell(row, 'name'))}
         />
         <Column
-          name="Pos"
+          nameRenderer={() => (<strong>Pos</strong>)}
           cellRenderer={(row) => (tableCell(row, 'position'))}
         />
         <Column
-          name="Team"
+          nameRenderer={() => (<strong>Team</strong>)}
           cellRenderer={(row) => (tableCell(row, 'team'))}
         />
         <Column
-          name="Bye"
+          nameRenderer={() => (<strong>Bye</strong>)}
           cellRenderer={(row) => (tableCell(row, 'bye'))}
         />
         <Column
