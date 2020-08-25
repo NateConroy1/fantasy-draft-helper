@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import PropTypes from 'prop-types';
-import './layout.css';
 import {
   Alignment, AnchorButton, Button, Classes, Dialog, InputGroup, Intent, Navbar, Tooltip,
 } from '@blueprintjs/core';
@@ -57,7 +56,10 @@ const Layout = ({
       >
         {children}
         <footer style={{ color: '#CED9E0', paddingTop: '2em', paddingLeft: '2em' }}>
-          {`© Nate Conroy, ${new Date().getFullYear()}`}
+          {'© '}
+          <a style={{ color: 'rgb(206, 217, 224)' }} href="https://www.nateconroy.com">Nate Conroy</a>
+          {', '}
+          {new Date().getFullYear()}
         </footer>
       </div>
       {emptyNav ? null

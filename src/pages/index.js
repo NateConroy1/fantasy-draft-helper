@@ -9,6 +9,7 @@ import '@blueprintjs/table/lib/css/table.css';
 
 import Landing from '../components/landing';
 import Main from '../components/main';
+import SEO from '../components/seo';
 
 FocusStyleManager.onlyShowFocusOnTabs();
 
@@ -59,6 +60,7 @@ const IndexPage = () => {
 
   return (
     <>
+      <SEO />
       { inLanding
         ? (
           <Landing
