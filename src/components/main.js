@@ -20,7 +20,7 @@ const Main = ({
         onAddList={onAddList}
       >
         <div style={{ display: 'flex', flexDirection: 'row', height: '100%' }}>
-          <RankingList key="aggregated-rankings" listName="Aggregated Rankings" list={aggregatedList} players={players} toggleDrafted={toggleDrafted} />
+          <RankingList key="aggregate-rankings" listName="Aggregate Rankings" list={aggregatedList} players={players} toggleDrafted={toggleDrafted} />
           {lists.map((list, index) => (
             <RankingList
               editable

@@ -13,7 +13,7 @@ const takenStyle = { backgroundColor: '#CED9E0', textDecoration: 'line-through' 
 const RankingList = ({
   listName, list, players, toggleDrafted, editable, onRename, onRemove,
 }) => {
-  const [columnWidths, setColumnWidths] = useState([200, 67, 67, 67, 67]);
+  const [columnWidths, setColumnWidths] = useState([200, 70, 70, 70, 60]);
   const [hideDraftedPlayers, setHideDraftedPlayers] = useState(false);
   const [filterOptions, setFilterOptions] = useState([]);
   const [currentListType, setCurrentListType] = useState(
@@ -80,15 +80,10 @@ const RankingList = ({
   };
 
   return (
-    <div
-      className="window"
-      style={{
-        marginLeft: '3em', marginRight: '3em', background: '#BFCCD6', width: '500px', height: '100%',
-      }}
-    >
+    <div className="ranking-window">
       <Navbar>
-        <Navbar.Group align={Alignment.LEFT}>
-          <Navbar.Heading>{listName}</Navbar.Heading>
+        <Navbar.Group align={Alignment.LEFT} style={{ marginRight: '1em' }}>
+          <Navbar.Heading className="ranking-header">{listName}</Navbar.Heading>
           {editable ? <Button minimal small icon="edit" onClick={onRename} /> : null}
           <Navbar.Divider />
           <HTMLSelect
@@ -101,7 +96,7 @@ const RankingList = ({
         <Navbar.Group align={Alignment.RIGHT}>
           <Checkbox
             checked={hideDraftedPlayers}
-            label="Hide drafted players"
+            label="Hide drafted"
             style={{ margin: '0' }}
             onChange={() => { setHideDraftedPlayers(!hideDraftedPlayers); }}
           />

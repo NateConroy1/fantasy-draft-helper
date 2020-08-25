@@ -1,7 +1,17 @@
-#window {
-    margin-right: 70px;
+.ranking-window {
+    margin-left: 3em;
+    margin-right: 3em;
+    background: #BFCCD6;
+    height: 100%;
 }
 
 .ranking-table {
     height: calc(100% - 3em);
+}
+
+.ranking-header {
+    max-width: 12em;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
 }
