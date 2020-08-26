@@ -92,14 +92,12 @@ class DataService {
       }
     }
 
-    // if missing headers
-    if (nameCol === -1 || posCol === -1 || teamCol === -1) {
+    // if missing required headers
+    if (nameCol === -1 || posCol === -1) {
       const missingCols = [];
       if (nameCol === -1) missingCols.push(Columns.NAME);
       if (posCol === -1) missingCols.push(Columns.POSITION);
-      if (teamCol === -1) missingCols.push(Columns.TEAM);
-      if (byeCol === -1) missingCols.push(Columns.BYE);
-      onError(`Invalid file. Missing column(s): ${missingCols}`);
+      onError(`Invalid file. Missing required column(s): ${missingCols}`);
       return null;
     }
 
@@ -110,12 +108,14 @@ class DataService {
       if (line.length > Math.max(nameCol, posCol, teamCol, byeCol)) {
         const position = line[posCol].replace(/[0-9]/g, '');
         const name = line[nameCol];
+        const team = teamCol !== -1 ? line[teamCol] : 'n/a';
+        const bye = byeCol !== -1 ? line[byeCol] : 'n/a';
         const entry = {
           rank: i,
           name,
           position,
-          team: line[teamCol],
-          bye: line[byeCol],
+          team,
+          bye,
         };
         list.positions[position] = true;
         if (!list.rankings.hasOwnProperty(position)) {
