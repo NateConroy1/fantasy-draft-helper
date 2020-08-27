@@ -2,9 +2,10 @@ import {
   Menu, MenuItem, Popover, PopoverPosition, Switch,
 } from '@blueprintjs/core';
 import React, { useEffect, useState } from 'react';
+import nameToUniqueId from '../util/nameToUniqueId';
+import { Positions } from '../util/constants';
 
 const MIN_QUERY_LENGTH = 2;
-const sanitizeString = (input) => input.replace(/[. -]/g, '').toLowerCase();
 
 const PlayerSearch = ({ players, toggleDrafted }) => {
   const [query, setQuery] = useState('');
@@ -13,9 +14,16 @@ const PlayerSearch = ({ players, toggleDrafted }) => {
   useEffect(() => {
     const results = [];
     if (query.length >= MIN_QUERY_LENGTH) {
-      Object.keys(players).forEach((name) => {
-        if (sanitizeString(name).includes(query)) {
-          results.push(name);
+      Object.keys(players).forEach((playerId) => {
+        const player = players[playerId];
+        // if it's a defense, check query against name rather than abbreviation
+        if (player.position === Positions.DST) {
+          const defenseName = nameToUniqueId(player.name);
+          if (defenseName.includes(query)) {
+            results.push(playerId);
+          }
+        } else if (playerId.includes(query)) {
+          results.push(playerId);
         }
       });
     }
@@ -38,30 +46,34 @@ const PlayerSearch = ({ players, toggleDrafted }) => {
           dir="auto"
           onChange={
             (event) => {
-              setQuery(sanitizeString(event.target.value));
+              const playerId = nameToUniqueId(event.target.value);
+              setQuery(playerId);
             }
           }
         />
       </div>
       { searchResults.length === 0 ? <></>
         : (
-          <Menu key="menu" style={{ maxHeight: '70vh', overflow: 'auto' }}>
+          <Menu key={searchResults.length} style={{ maxHeight: '70vh', overflow: 'auto' }}>
             {
-            searchResults.map((name, index) => (
-              <MenuItem
-                key={index}
-                text={name}
-                shouldDismissPopover={false}
-                label={(
-                  <Switch
-                    checked={players[name].available}
-                    onChange={() => {
-                      toggleDrafted(name);
-                    }}
-                  />
+            searchResults.map((playerId, index) => {
+              const { name } = players[playerId];
+              return (
+                <MenuItem
+                  key={index}
+                  text={name}
+                  shouldDismissPopover={false}
+                  label={(
+                    <Switch
+                      checked={players[playerId].available}
+                      onChange={() => {
+                        toggleDrafted(playerId);
+                      }}
+                    />
                 )}
-              />
-            ))
+                />
+              );
+            })
           }
           </Menu>
         )}

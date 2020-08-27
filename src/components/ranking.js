@@ -7,6 +7,7 @@ import {
 } from '@blueprintjs/table';
 import { Positions } from '../util/constants';
 import './ranking.css';
+import nameToUniqueId from '../util/nameToUniqueId';
 
 const takenStyle = { backgroundColor: '#CED9E0', textDecoration: 'line-through' };
 
@@ -27,7 +28,14 @@ const RankingList = ({
     if (hideDraftedPlayers) {
       const availableOnlyList = [];
       list[currentListType].forEach((player) => {
-        if (players[player.name].available) {
+        let playerId;
+        if (player.position === Positions.DST) {
+          playerId = player.team;
+        } else {
+          playerId = nameToUniqueId(player.name);
+        }
+
+        if (players[playerId].available) {
           availableOnlyList.push(player);
         }
       });
@@ -60,19 +68,34 @@ const RankingList = ({
 
   const tableCell = (row, type) => {
     const player = currentList[row];
-    const { available } = players[player.name];
-    return (<Cell className="ranking-text-cell" style={available ? null : takenStyle}>{player[type]}</Cell>);
+
+    let playerId;
+    if (player.position === Positions.DST) {
+      playerId = player.team;
+    } else {
+      playerId = nameToUniqueId(player.name);
+    }
+    const { available } = players[playerId];
+    return (<Cell className="ranking-text-cell" style={available ? null : takenStyle}>{players[playerId][type]}</Cell>);
   };
 
   const toggleCell = (row) => {
     const player = currentList[row];
-    const { available } = players[player.name];
+
+    let playerId;
+    if (player.position === Positions.DST) {
+      playerId = player.team;
+    } else {
+      playerId = nameToUniqueId(player.name);
+    }
+
+    const { available } = players[playerId];
     return (
       <Cell style={available ? null : takenStyle}>
         <Switch
           checked={available}
           onChange={() => {
-            toggleDrafted(player.name);
+            toggleDrafted(playerId);
           }}
         />
       </Cell>

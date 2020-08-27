@@ -1,17 +1,24 @@
 import sortBy from 'lodash/sortBy';
 import {
-  Columns, RankingListsKey, PlayersKey, Positions, AggregatedListKey,
+  Columns, RankingListsKey, PlayersKey, Positions, AggregatedListKey, TeamAbbrevs,
 } from '../util/constants';
+import nameToUniqueId from '../util/nameToUniqueId';
+import defenseToUniqueId from '../util/defenseToUniqueId';
 
 class DataService {
   constructor() {
-    const storedLists = this._retrieveFromLocalStorage(RankingListsKey);
-    const storedAggregatedList = this._retrieveFromLocalStorage(AggregatedListKey);
-    const storedPlayers = this._retrieveFromLocalStorage(PlayersKey);
+    this.lists = this._retrieveFromLocalStorage(RankingListsKey);
+    this.aggregatedList = this._retrieveFromLocalStorage(AggregatedListKey);
+    this.players = this._retrieveFromLocalStorage(PlayersKey);
 
-    this.lists = (storedLists === null ? [] : storedLists);
-    this.aggregatedList = (storedAggregatedList === null ? {} : storedAggregatedList);
-    this.players = (storedPlayers === null ? {} : storedPlayers);
+    if (this.lists === null
+      || this.aggregatedList === null
+      || this.players === null
+      || this.players.version !== 2) {
+      this.lists = [];
+      this.aggregatedList = {};
+      this.players = { version: 2, data: {} };
+    }
 
     this.toggleDrafted = this.toggleDrafted.bind(this);
     this.addList = this.addList.bind(this);
@@ -24,9 +31,9 @@ class DataService {
     this._retrieveFromLocalStorage = this._retrieveFromLocalStorage.bind(this);
   }
 
-  toggleDrafted(player) {
-    if (this.players.hasOwnProperty(player)) {
-      this.players[player].available = !this.players[player].available;
+  toggleDrafted(playerId) {
+    if (this.players.data.hasOwnProperty(playerId)) {
+      this.players.data[playerId].available = !this.players.data[playerId].available;
       this._updateLocalStorage(PlayersKey, this.players);
     }
   }
@@ -51,16 +58,16 @@ class DataService {
 
   resetPlayers() {
     const playersToDelete = [];
-    Object.keys(this.players).forEach((name) => {
+    Object.keys(this.players.data).forEach((playerId) => {
       // reset player availability
-      this.players[name].available = true;
+      this.players.data[playerId].available = true;
       // if player isn't contained in any of the lists, safe to delete
-      if (this.players[name].posCount < 1) {
-        playersToDelete.push(name);
+      if (this.players.data[playerId].posCount < 1) {
+        playersToDelete.push(playerId);
       }
     });
-    playersToDelete.forEach((name) => {
-      delete this.players[name];
+    playersToDelete.forEach((playerId) => {
+      delete this.players.data[playerId];
     });
     this._updateLocalStorage(PlayersKey, this.players);
   }
@@ -93,10 +100,11 @@ class DataService {
     }
 
     // if missing required headers
-    if (nameCol === -1 || posCol === -1) {
+    if (nameCol === -1 || posCol === -1 || teamCol === -1) {
       const missingCols = [];
       if (nameCol === -1) missingCols.push(Columns.NAME);
       if (posCol === -1) missingCols.push(Columns.POSITION);
+      if (teamCol === -1) missingCols.push(Columns.TEAM);
       onError(`Invalid file. Missing required column(s): ${missingCols}`);
       return null;
     }
@@ -104,12 +112,34 @@ class DataService {
     // parse each line
     const list = { positions: {}, rankings: { ALL: [] } };
     for (let i = 1; i < lines.length; i++) {
+      // split line into individual cells
       const line = lines[i].trim().split(',');
       if (line.length > Math.max(nameCol, posCol, teamCol, byeCol)) {
-        const position = line[posCol].replace(/[0-9]/g, '');
+        // parse position
+        const position = line[posCol].toUpperCase().replace(/[^A-Z]/g, '');
+        if (!Positions.hasOwnProperty(position)) {
+          onError(`File contains unrecognized position type: ${position}. Valid options are [RB, WR, TE, QB, K, DST].`);
+          return null;
+        }
+
         const name = line[nameCol];
-        const team = teamCol !== -1 ? line[teamCol] : 'n/a';
-        const bye = byeCol !== -1 ? line[byeCol] : 'n/a';
+
+        // parse team
+        let team = line[teamCol].toUpperCase();
+        if (!TeamAbbrevs.hasOwnProperty(team)) {
+          // if position is a defense we can try to determine from the name
+          if (position === Positions.DST) {
+            team = defenseToUniqueId(name);
+            if (team === null) {
+              onError(`Can't recognize defensive team: ${name}`);
+              return null;
+            }
+          }
+          // TODO: if position isn't a defense we can try to see if another list has the information
+        }
+
+        const bye = byeCol === -1 ? '' : line[byeCol];
+
         const entry = {
           rank: i,
           name,
@@ -141,10 +171,10 @@ class DataService {
   _buildAggregatedList() {
     const newAggregatedList = {};
 
-    Object.keys(this.players).forEach((name) => {
-      const p = this.players[name];
+    Object.keys(this.players.data).forEach((playerId) => {
+      const p = this.players.data[playerId];
       const player = {
-        name,
+        name: p.name,
         position: p.position,
         team: p.team,
         bye: p.bye,
@@ -170,7 +200,9 @@ class DataService {
 
     Object.keys(newAggregatedList).forEach((position) => {
       const sortVar = (position === Positions.ALL ? 'avgOverallRank' : 'avgPosRank');
-      newAggregatedList[position] = sortBy(newAggregatedList[position], [(player) => player[sortVar]]);
+      newAggregatedList[position] = sortBy(newAggregatedList[position], [
+        (player) => player[sortVar],
+      ]);
     });
 
     this.aggregatedList = newAggregatedList;
@@ -184,8 +216,17 @@ class DataService {
       // update avg pos rankings
       Object.keys(list.positions).forEach((position) => {
         list.rankings[position].forEach((player, index) => {
-          if (!updatedPlayers.hasOwnProperty(player.name)) {
+          let playerId;
+          // if position is defense, use the team abbreviation as the id
+          if (position === Positions.DST) {
+            playerId = player.team;
+          } else {
+            playerId = nameToUniqueId(player.name);
+          }
+
+          if (!updatedPlayers.hasOwnProperty(playerId)) {
             const newPlayer = {
+              name: player.name,
               available: true,
               position,
               team: player.team,
@@ -195,45 +236,63 @@ class DataService {
               posCount: 0,
               overallCount: 0,
             };
-            updatedPlayers[player.name] = newPlayer;
+            updatedPlayers[playerId] = newPlayer;
             // if player doesn't exist in compiled map, add them
-            if (!this.players.hasOwnProperty(player.name)) {
-              this.players[player.name] = newPlayer;
+            if (!this.players.data.hasOwnProperty(playerId)) {
+              this.players.data[playerId] = newPlayer;
             }
           }
-          const data = updatedPlayers[player.name];
-          updatedPlayers[player.name].avgPosRank = (
+
+          // set player's name to be the longer of the two values
+          if (this.players.data[playerId].name.length < player.name.length) {
+            this.players.data[playerId].name = player.name;
+          }
+
+          // set the bye week if we didn't already know it
+          if (this.players.data[playerId].bye === '' && player.bye !== '') {
+            this.players.data[playerId].bye = player.bye;
+          }
+
+          const data = updatedPlayers[playerId];
+          updatedPlayers[playerId].avgPosRank = (
             (data.avgPosRank * data.posCount) + (index + 1)) / (data.posCount + 1);
-          updatedPlayers[player.name].posCount += 1;
+          updatedPlayers[playerId].posCount += 1;
         });
       });
 
       // update avg overall rankings
       if (Object.keys(list.positions).length > 1) {
         list.rankings[Positions.ALL].forEach((player, index) => {
-          const data = updatedPlayers[player.name];
-          updatedPlayers[player.name].avgOverallRank = (
+          let playerId;
+          // if position is defense, use the team abbreviation as the id
+          if (player.position === Positions.DST) {
+            playerId = player.team;
+          } else {
+            playerId = nameToUniqueId(player.name);
+          }
+          const data = updatedPlayers[playerId];
+          updatedPlayers[playerId].avgOverallRank = (
             (data.avgOverallRank * data.overallCount) + (index + 1)) / (data.overallCount + 1);
-          updatedPlayers[player.name].overallCount += 1;
+          updatedPlayers[playerId].overallCount += 1;
         });
       }
     });
 
     // update player data
-    Object.keys(this.players).forEach((name) => {
-      if (updatedPlayers.hasOwnProperty(name)) {
+    Object.keys(this.players.data).forEach((playerId) => {
+      if (updatedPlayers.hasOwnProperty(playerId)) {
         // update ranking statistics in our compiled player dict
-        this.players[name].avgOverallRank = updatedPlayers[name].avgOverallRank;
-        this.players[name].avgPosRank = updatedPlayers[name].avgPosRank;
-        this.players[name].posCount = updatedPlayers[name].posCount;
-        this.players[name].overallCount = updatedPlayers[name].overallCount;
+        this.players.data[playerId].avgOverallRank = updatedPlayers[playerId].avgOverallRank;
+        this.players.data[playerId].avgPosRank = updatedPlayers[playerId].avgPosRank;
+        this.players.data[playerId].posCount = updatedPlayers[playerId].posCount;
+        this.players.data[playerId].overallCount = updatedPlayers[playerId].overallCount;
       } else {
         // player doesn't appear on any of our lists due to a list deletion
         // preserve draft availability, but reset ranking statistics
-        this.players[name].avgOverallRank = 0;
-        this.players[name].avgPosRank = 0;
-        this.players[name].posCount = 0;
-        this.players[name].overallCount = 0;
+        this.players.data[playerId].avgOverallRank = 0;
+        this.players.data[playerId].avgPosRank = 0;
+        this.players.data[playerId].posCount = 0;
+        this.players.data[playerId].overallCount = 0;
       }
     });
     this._updateLocalStorage(PlayersKey, this.players);

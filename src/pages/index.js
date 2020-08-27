@@ -19,13 +19,13 @@ if (typeof window !== 'undefined') {
 
 const IndexPage = () => {
   const [lists, setLists] = useState(dataService.lists);
-  const [players, setPlayers] = useState(dataService.players);
+  const [players, setPlayers] = useState(dataService.players.data);
   const [inLanding, setInLanding] = useState(true);
 
   const onAddList = (name, list) => {
     dataService.addList(name, list);
     setLists(dataService.lists.slice());
-    setPlayers({ ...dataService.players });
+    setPlayers({ ...dataService.players.data });
   };
 
   const onRemoveList = (index) => {
@@ -42,19 +42,24 @@ const IndexPage = () => {
     setInLanding(false);
   };
 
-  const toggleDrafted = (player) => {
-    dataService.toggleDrafted(player);
-    setPlayers({ ...dataService.players });
+  const toggleDrafted = (playerId) => {
+    dataService.toggleDrafted(playerId);
+    setPlayers({ ...dataService.players.data });
   };
 
   const resetPlayers = () => {
     dataService.resetPlayers();
-    setPlayers({ ...dataService.players });
+    setPlayers({ ...dataService.players.data });
   };
 
   useEffect(() => {
-    if (lists.length === 0 && !inLanding) {
-      setInLanding(true);
+    if (lists.length === 0) {
+      // reset our players dictionary when all of the lists have been deleted
+      resetPlayers();
+      // return to landing
+      if (!inLanding) {
+        setInLanding(true);
+      }
     }
   }, [lists]);
 
