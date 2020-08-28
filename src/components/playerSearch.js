@@ -49,7 +49,6 @@ const PlayerSearch = ({ players, toggleDrafted }) => {
           type="search"
           placeholder="Search player"
           dir="auto"
-          autoFocus
           ref={inputRef}
           onChange={
             (event) => {
