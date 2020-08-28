@@ -11,6 +11,12 @@ const PlayerSearch = ({ players, toggleDrafted }) => {
   const [query, setQuery] = useState('');
   const [searchResults, setSearchResults] = useState([]);
 
+  const inputRef = React.createRef();
+
+  const focus = () => {
+    inputRef.current.focus();
+  };
+
   useEffect(() => {
     const results = [];
     if (query.length >= MIN_QUERY_LENGTH) {
@@ -33,8 +39,7 @@ const PlayerSearch = ({ players, toggleDrafted }) => {
   return (
     <Popover
       minimal
-      autoFocus={false}
-      enforceFocus={false}
+      openOnTargetFocus
       position={PopoverPosition.BOTTOM_LEFT}
     >
       <div className="bp3-input-group" style={{ width: '20em' }}>
@@ -44,6 +49,8 @@ const PlayerSearch = ({ players, toggleDrafted }) => {
           type="search"
           placeholder="Search player"
           dir="auto"
+          autoFocus
+          ref={inputRef}
           onChange={
             (event) => {
               const playerId = nameToUniqueId(event.target.value);
@@ -67,6 +74,7 @@ const PlayerSearch = ({ players, toggleDrafted }) => {
                     <Switch
                       checked={players[playerId].available}
                       onChange={() => {
+                        focus();
                         toggleDrafted(playerId);
                       }}
                     />
