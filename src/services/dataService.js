@@ -80,7 +80,7 @@ class DataService {
     let teamCol = -1;
     let byeCol = -1;
     for (let i = 0; i < headers.length; i++) {
-      const header = headers[i].toLowerCase();
+      const header = headers[i].toLowerCase().replace(/[^a-z]/g, '');
       switch (header) {
         case Columns.NAME:
           nameCol = i;
