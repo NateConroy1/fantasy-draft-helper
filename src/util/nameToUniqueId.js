@@ -1,8 +1,8 @@
 import { Suffixes } from './constants';
 
 const nameToUniqueId = (name) => {
-  // make string lowercase and split names
-  const nameLower = name.toLowerCase();
+  // make string lowercase, remove special characters, and split names
+  const nameLower = name.toLowerCase().replace(/[^a-z0-9 ]/g, '');
   const splitBySpaces = nameLower.split(' ');
 
   const subSections = splitBySpaces.length;
@@ -14,15 +14,12 @@ const nameToUniqueId = (name) => {
   }
 
   // fuse string back together
-  let sanitizedName = '';
+  let playerId = '';
   splitBySpaces.forEach((sub) => {
-    sanitizedName += sub;
+    playerId += sub;
   });
 
-  // remove special characters
-  sanitizedName = sanitizedName.replace(/[^a-z0-9]/g, '');
-
-  return sanitizedName;
+  return playerId;
 };
 
 export default nameToUniqueId;

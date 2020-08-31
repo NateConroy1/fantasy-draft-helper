@@ -17,8 +17,8 @@ export const Positions = {
 
 export const Suffixes = {};
 
-Suffixes['jr.'] = true;
-Suffixes['sr.'] = true;
+Suffixes.jr = true;
+Suffixes.sr = true;
 Suffixes.i = true;
 Suffixes.ii = true;
 Suffixes.iii = true;
