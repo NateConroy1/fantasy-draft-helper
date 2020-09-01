@@ -2,7 +2,7 @@ module.exports = {
   siteMetadata: {
     title: 'Fantasy Draft Helper',
     titleTemplate: 'Fantasy Draft Helper',
-    description: 'All in one tool for keeping track of your fantasy draft in real time.',
+    description: 'Simple assistant for compiling your rankings and managing your offline fantasy football draft.',
     url: 'https://www.fantasy.nateconroy.com',
     image: '/images/favicon.jpg',
     twitterUsername: '@NateConroy1',
