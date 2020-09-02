@@ -152,7 +152,7 @@ class DataService {
           bye,
         };
 
-        const tier = line[tierCol].replace(/[^0-9]/g, '');
+        const tier = (tierCol >= 0 ? line[tierCol].replace(/[^0-9]/g, '') : '');
         if (tier.length > 0) {
           entry.tier = parseInt(tier, 10);
         }
