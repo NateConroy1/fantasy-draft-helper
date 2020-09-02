@@ -161,7 +161,7 @@ const RankingList = ({
       <Table
         className="ranking-table"
         numRows={currentList.length}
-        defaultRowHeight={22}
+        defaultRowHeight={24}
         columnWidths={columnWidths}
         onColumnWidthChanged={(i, size) => {
           resizeColumn(i, size);

@@ -21,10 +21,16 @@
 }
 
 .ranking-cell-container {
+    height: 100%;
     display: flex;
     flex-direction: row;
 }
 
 .ranking-cell-tier {
     width: 100%;
+    margin: auto;
+}
+
+.bp3-table-no-wrap-text {
+    height: 100%;
 }
