@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import {
-  Alignment, Button, Checkbox, HTMLSelect, Intent, Navbar, Switch,
+  Alignment, Button, Checkbox, HTMLSelect, Intent, Navbar, Switch, Tag,
 } from '@blueprintjs/core';
 import {
   Cell, Column, RenderMode, Table,
@@ -14,7 +14,7 @@ const takenStyle = { backgroundColor: '#CED9E0', textDecoration: 'line-through' 
 const RankingList = ({
   listName, list, players, toggleDrafted, editable, onRename, onRemove,
 }) => {
-  const [columnWidths, setColumnWidths] = useState([200, 70, 70, 70, 60]);
+  const [columnWidths, setColumnWidths] = useState([250, 70, 70, 70, 60]);
   const [hideDraftedPlayers, setHideDraftedPlayers] = useState(false);
   const [filterOptions, setFilterOptions] = useState([]);
   const [currentListType, setCurrentListType] = useState(
@@ -25,9 +25,11 @@ const RankingList = ({
   const [currentList, setCurrentList] = useState(list[currentListType]);
 
   const updateVisibleList = () => {
-    if (hideDraftedPlayers) {
-      const availableOnlyList = [];
-      list[currentListType].forEach((player) => {
+    const visibleList = [];
+    let currentTier = -1;
+    list[currentListType].forEach((player) => {
+      const showTier = (player.hasOwnProperty('tier') && player.tier !== currentTier);
+      if (hideDraftedPlayers) {
         let playerId;
         if (player.position === Positions.DST) {
           playerId = player.team;
@@ -36,13 +38,19 @@ const RankingList = ({
         }
 
         if (players[playerId].available) {
-          availableOnlyList.push(player);
+          if (showTier) {
+            currentTier = player.tier;
+          }
+          visibleList.push({ ...player, showTier });
         }
-      });
-      setCurrentList(availableOnlyList);
-    } else {
-      setCurrentList(list[currentListType]);
-    }
+      } else {
+        if (showTier) {
+          currentTier = player.tier;
+        }
+        visibleList.push({ ...player, showTier });
+      }
+    });
+    setCurrentList(visibleList);
   };
 
   useEffect(() => {
@@ -76,7 +84,20 @@ const RankingList = ({
       playerId = nameToUniqueId(player.name);
     }
     const { available } = players[playerId];
-    return (<Cell className="ranking-text-cell" style={available ? null : takenStyle}>{players[playerId][type]}</Cell>);
+    return (
+      <Cell className="ranking-text-cell" style={available ? null : takenStyle}>
+        <div className="ranking-cell-container">
+          {players[playerId][type]}
+          {type === 'name' && player.showTier
+            ? (
+              <div className="ranking-cell-tier">
+                <Tag minimal round intent={Intent.SUCCESS} style={{ float: 'right' }}>{`Tier ${player.tier}`}</Tag>
+              </div>
+            )
+            : null}
+        </div>
+      </Cell>
+    );
   };
 
   const toggleCell = (row) => {

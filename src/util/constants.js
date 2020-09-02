@@ -3,6 +3,7 @@ export const Columns = {
   POSITION: 'pos',
   TEAM: 'team',
   BYE: 'bye',
+  TIER: 'tier',
 };
 
 export const Positions = {

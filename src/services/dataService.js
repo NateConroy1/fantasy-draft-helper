@@ -79,6 +79,7 @@ class DataService {
     let posCol = -1;
     let teamCol = -1;
     let byeCol = -1;
+    let tierCol = -1;
     for (let i = 0; i < headers.length; i++) {
       const header = headers[i].toLowerCase().replace(/[^a-z]/g, '');
       switch (header) {
@@ -93,6 +94,9 @@ class DataService {
           break;
         case Columns.BYE:
           byeCol = i;
+          break;
+        case Columns.TIER:
+          tierCol = i;
           break;
         default:
           break;
@@ -114,7 +118,7 @@ class DataService {
     for (let i = 1; i < lines.length; i++) {
       // split line into individual cells
       const line = lines[i].trim().split(',');
-      if (line.length > Math.max(nameCol, posCol, teamCol, byeCol)) {
+      if (line.length > Math.max(nameCol, posCol, teamCol, byeCol, tierCol)) {
         // parse position
         const position = line[posCol].toUpperCase().replace(/[^A-Z]/g, '');
         if (!Positions.hasOwnProperty(position)) {
@@ -147,6 +151,12 @@ class DataService {
           team,
           bye,
         };
+
+        const tier = line[tierCol].replace(/[^0-9]/g, '');
+        if (tier.length > 0) {
+          entry.tier = parseInt(tier, 10);
+        }
+
         list.positions[position] = true;
         if (!list.rankings.hasOwnProperty(position)) {
           list.rankings[position] = [];

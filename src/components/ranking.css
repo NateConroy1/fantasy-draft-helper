@@ -19,3 +19,12 @@
 .ranking-text-cell {
     font-size: .85rem;
 }
+
+.ranking-cell-container {
+    display: flex;
+    flex-direction: row;
+}
+
+.ranking-cell-tier {
+    width: 100%;
+}

@@ -23,6 +23,7 @@ They can appear in any order and additional columns are ignored.
 * pos (required) - the position of the player (RB, WR, TE, QB, K, DST)
 * team (required) - the team of the player
 * bye (optional) - player bye week
+* tier (optional) - integer representing a ranking tier for the player (one tier per player, many players per tier)
 
 ## Development
 
