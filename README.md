@@ -16,14 +16,17 @@ Hosted at www.fantasy.nateconroy.com
 
 ## Ranking List Requirements
 
-Imported ranking lists must be in CSV format. The following column headers are recognized by the tool. 
+Imported ranking lists must be in CSV format. The following column header strings are recognized by the tool. 
 They can appear in any order and additional columns are ignored.
 
-* name (required) - the name of the player
-* pos (required) - the position of the player (RB, WR, TE, QB, K, DST)
-* team (required) - the team of the player
-* bye (optional) - player bye week
-* tier (optional) - integer representing a ranking tier for the player (one tier per player, many players per tier)
+| Accepted Headers                               | Required | Description                                                                        |
+| -----------------------------------------------| -------- | ---------------------------------------------------------------------------------- |
+| <ul><li>`"name"`</li><li>`"player"`</li></ul>  | Yes      | name of the player                                                                 |
+| <ul><li>`"position"`</li><li>`"pos"`</li></ul> | Yes      | position of the player (`"RB"`, `"WR"`, `"TE"`, `"QB"`, `"K"`, `"DST"`)            |
+| <ul><li>`"team"`</li></ul>                     | Yes      | official abbreviation of the player's team if applicable (ex. `"BUF"`)             |
+| <ul><li>`"bye"`</li><li>`"bye week"`</li></ul> | No       | player bye week if applicable                                                      |
+| <ul><li>`"tier"`</li></ul>                     | No       | integer representing a tier for the player (one per player, many players per tier) |
+| <ul><li>`"value"`</li><li>`"val"`</li></ul>    | No       | string representing the value of a player (ex. `"$50"`)                            |
 
 ## Development
 

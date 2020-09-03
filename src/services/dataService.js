@@ -73,63 +73,65 @@ class DataService {
   }
 
   parseList(text, onError) {
+    // remove all quotes and split by line
     const lines = text.replace(/"/g, '').split('\n');
+    // get list of headers
     const headers = lines[0].trim().split(',');
-    let nameCol = -1;
-    let posCol = -1;
-    let teamCol = -1;
-    let byeCol = -1;
-    let tierCol = -1;
+
+    const recognizedCols = Object.keys(Columns);
+    const colIndices = {};
+
+    // set all column indices
     for (let i = 0; i < headers.length; i++) {
       const header = headers[i].toLowerCase().replace(/[^a-z]/g, '');
-      switch (header) {
-        case Columns.NAME:
-          nameCol = i;
+      let found = false;
+      for (let j = 0; j < recognizedCols.length; j++) {
+        const supportedMatches = Columns[recognizedCols[j]];
+        for (let k = 0; k < supportedMatches.length; k++) {
+          if (header === supportedMatches[k]) {
+            colIndices[supportedMatches[0]] = i;
+            found = true;
+            break;
+          }
+        }
+        if (found) {
           break;
-        case Columns.POSITION:
-          posCol = i;
-          break;
-        case Columns.TEAM:
-          teamCol = i;
-          break;
-        case Columns.BYE:
-          byeCol = i;
-          break;
-        case Columns.TIER:
-          tierCol = i;
-          break;
-        default:
-          break;
+        }
       }
     }
 
-    // if missing required headers
-    if (nameCol === -1 || posCol === -1 || teamCol === -1) {
-      const missingCols = [];
-      if (nameCol === -1) missingCols.push(Columns.NAME);
-      if (posCol === -1) missingCols.push(Columns.POSITION);
-      if (teamCol === -1) missingCols.push(Columns.TEAM);
-      onError(`Invalid file. Missing required column(s): ${missingCols}`);
+    // check for missing required cols, throw error and return null if found
+    const missingRequiredCols = [];
+    if (!colIndices.hasOwnProperty(Columns.name[0])) missingRequiredCols.push(Columns.name[0]);
+    if (!colIndices.hasOwnProperty(Columns.position[0])) missingRequiredCols.push(Columns.position[0]);
+    if (!colIndices.hasOwnProperty(Columns.team[0])) missingRequiredCols.push(Columns.team[0]);
+    if (missingRequiredCols.length > 0) {
+      onError(`Invalid file. Missing required column(s): ${missingRequiredCols}`);
       return null;
     }
 
-    // parse each line
+    // parse data line by line
     const list = { positions: {}, rankings: { ALL: [] } };
     for (let i = 1; i < lines.length; i++) {
       // split line into individual cells
       const line = lines[i].trim().split(',');
-      if (line.length > Math.max(nameCol, posCol, teamCol, byeCol, tierCol)) {
+      // make sure line has all cells
+      if (line.length === headers.length) {
         // parse position
-        const position = line[posCol].toUpperCase().replace(/[^A-Z]/g, '');
+        const posIdx = colIndices[Columns.position[0]];
+        const position = line[posIdx].toUpperCase().replace(/[^A-Z]/g, '');
         if (!Positions.hasOwnProperty(position)) {
           onError(`File contains unrecognized position type: ${position}. Valid options are [RB, WR, TE, QB, K, DST].`);
           return null;
         }
 
-        const name = line[nameCol];
+        // parse name
+        const nameIdx = colIndices[Columns.name[0]];
+        const name = line[nameIdx];
 
         // parse team
-        let team = line[teamCol].toUpperCase();
+        const teamIdx = colIndices[Columns.team[0]];
+        let team = line[teamIdx].toUpperCase();
         if (!TeamAbbrevs.hasOwnProperty(team)) {
           // if position is a defense we can try to determine from the name
           if (position === Positions.DST) {
@@ -142,7 +144,12 @@ class DataService {
           // TODO: if position isn't a defense we can try to see if another list has the information
         }
 
-        const bye = byeCol === -1 ? '' : line[byeCol];
+        // parse bye week
+        let bye = '';
+        if (colIndices.hasOwnProperty(Columns.bye[0])) {
+          const byeIdx = colIndices[Columns.bye[0]];
+          bye = line[byeIdx].replace(/[^0-9]/g, '');
+        }
 
         const entry = {
           rank: i,
@@ -152,9 +159,19 @@ class DataService {
           bye,
         };
 
-        const tier = (tierCol >= 0 ? line[tierCol].replace(/[^0-9]/g, '') : '');
-        if (tier.length > 0) {
-          entry.tier = parseInt(tier, 10);
+        // parse and set the tier if given
+        if (colIndices.hasOwnProperty(Columns.tier[0])) {
+          const tierIdx = colIndices[Columns.tier[0]];
+          const tier = line[tierIdx].replace(/[^0-9]/g, '');
+          if (tier.length > 0) {
+            entry.tier = parseInt(tier, 10);
+          }
+        }
+
+        // set the value if given
+        if (colIndices.hasOwnProperty(Columns.value[0])) {
+          const valIdx = colIndices[Columns.value[0]];
+          entry.value = line[valIdx];
         }
 
         list.positions[position] = true;

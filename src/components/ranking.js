@@ -11,6 +11,37 @@ import nameToUniqueId from '../util/nameToUniqueId';
 
 const takenStyle = { backgroundColor: '#CED9E0', textDecoration: 'line-through' };
 
+const renderTags = (player) => (
+  <div className="ranking-cell-right">
+    <div className="ranking-cell-tag-container">
+      {player.showTier
+        ? (
+          <Tag
+            minimal
+            round
+            className="ranking-cell-tag"
+            intent={Intent.SUCCESS}
+          >
+            {`Tier ${player.tier}`}
+          </Tag>
+        )
+        : null}
+      {player.hasOwnProperty('value')
+        ? (
+          <Tag
+            minimal
+            round
+            className="ranking-cell-tag"
+            intent={Intent.PRIMARY}
+          >
+            {player.value}
+          </Tag>
+        )
+        : null}
+    </div>
+  </div>
+);
+
 const RankingList = ({
   listName, list, players, toggleDrafted, editable, onRename, onRemove,
 }) => {
@@ -88,13 +119,7 @@ const RankingList = ({
       <Cell className="ranking-text-cell" style={available ? null : takenStyle}>
         <div className="ranking-cell-container">
           {players[playerId][type]}
-          {type === 'name' && player.showTier
-            ? (
-              <div className="ranking-cell-tier">
-                <Tag minimal round intent={Intent.SUCCESS} style={{ float: 'right' }}>{`Tier ${player.tier}`}</Tag>
-              </div>
-            )
-            : null}
+          {type === 'name' ? renderTags(player) : null}
         </div>
       </Cell>
     );

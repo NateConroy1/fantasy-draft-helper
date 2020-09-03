@@ -26,9 +26,19 @@
     flex-direction: row;
 }
 
-.ranking-cell-tier {
+.ranking-cell-right {
     width: 100%;
     margin: auto;
+}
+
+.ranking-cell-tag-container {
+    display: flex;
+    flex-direction: row;
+    float: right;
+}
+
+.ranking-cell-tag {
+    float: right;
 }
 
 .bp3-table-no-wrap-text {

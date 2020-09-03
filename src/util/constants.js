@@ -1,9 +1,10 @@
 export const Columns = {
-  NAME: 'name',
-  POSITION: 'pos',
-  TEAM: 'team',
-  BYE: 'bye',
-  TIER: 'tier',
+  name: ['name', 'player'],
+  position: ['position', 'pos'],
+  team: ['team'],
+  bye: ['bye', 'byeweek'],
+  tier: ['tier'],
+  value: ['value', 'val'],
 };
 
 export const Positions = {
@@ -16,20 +17,20 @@ export const Positions = {
   K: 'K',
 };
 
-export const Suffixes = {};
-
-Suffixes.jr = true;
-Suffixes.sr = true;
-Suffixes.i = true;
-Suffixes.ii = true;
-Suffixes.iii = true;
-Suffixes.iv = true;
-Suffixes.v = true;
-Suffixes.vi = true;
-Suffixes.vii = true;
-Suffixes.viii = true;
-Suffixes.ix = true;
-Suffixes.x = true;
+export const Suffixes = {
+  jr: true,
+  sr: true,
+  i: true,
+  ii: true,
+  iii: true,
+  iv: true,
+  v: true,
+  vi: true,
+  vii: true,
+  viii: true,
+  ix: true,
+  x: true,
+};
 
 export const TeamAbbrevs = {
   ARI: { city: 'Arizona', mascot: 'Cardinals' },
