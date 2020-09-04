@@ -6,6 +6,7 @@ import {
 import PlayerSearch from './playerSearch';
 import UploadModal from './uploadModal';
 import dataService from '../services';
+import { REPO_URL } from '../util/constants';
 
 const Layout = ({
   children, emptyNav, players, toggleDrafted, onReset, onAddList,
@@ -28,18 +29,31 @@ const Layout = ({
             <Navbar.Group align={Alignment.RIGHT}>
               <Button
                 minimal
-                icon="reset"
-                onClick={() => {
-                  setResetDialogOpen(true);
-                }}
-              />
-              <Button
-                minimal
                 icon="add"
                 onClick={() => {
                   setUploadDialogOpen(true);
                 }}
-              />
+              >
+                Import
+              </Button>
+              <Button
+                minimal
+                icon="reset"
+                onClick={() => {
+                  setResetDialogOpen(true);
+                }}
+              >
+                Reset
+              </Button>
+              <Button
+                minimal
+                icon="git-repo"
+                onClick={() => {
+                  window.open(REPO_URL, '_blank');
+                }}
+              >
+                Doc
+              </Button>
             </Navbar.Group>
           </>
         )}

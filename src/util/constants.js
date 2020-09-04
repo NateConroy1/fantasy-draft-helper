@@ -82,3 +82,5 @@ Object.keys(TeamAbbrevs).forEach((abbr) => {
 export const RankingListsKey = 'rankingLists';
 export const AggregatedListKey = 'aggregatedList';
 export const PlayersKey = 'playersKey';
+
+export const REPO_URL = 'https://github.com/NateConroy1/fantasy-draft-helper';

@@ -9,6 +9,7 @@ import createToast from '../util/createToast';
 import Layout from './layout';
 import RenameDialog from './renameDialog';
 import dataService from '../services';
+import { REPO_URL } from '../util/constants';
 
 const toaster = (typeof document !== 'undefined') ? Toaster.create({
   position: Position.BOTTOM,
@@ -178,6 +179,16 @@ const Landing = ({
                 loading={loading}
               >
                 Done
+              </Button
+              >
+              <Button
+                large
+                icon="git-repo"
+                onClick={() => {
+                  window.open(REPO_URL, '_blank');
+                }}
+              >
+                Doc
               </Button>
             </FormGroup>
           </FormGroup>
