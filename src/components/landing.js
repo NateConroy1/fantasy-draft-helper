@@ -179,16 +179,6 @@ const Landing = ({
                 loading={loading}
               >
                 Done
-              </Button
-              >
-              <Button
-                large
-                icon="git-repo"
-                onClick={() => {
-                  window.open(REPO_URL, '_blank');
-                }}
-              >
-                Doc
               </Button>
             </FormGroup>
           </FormGroup>

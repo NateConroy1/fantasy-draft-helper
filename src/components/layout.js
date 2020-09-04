@@ -20,13 +20,15 @@ const Layout = ({
         <Navbar.Group align={Alignment.LEFT}>
           <Navbar.Heading>Fantasy Draft Helper</Navbar.Heading>
         </Navbar.Group>
-        {emptyNav ? null : (
-          <>
+        <>
+          {emptyNav ? null : (
             <Navbar.Group align={Alignment.LEFT}>
               <Navbar.Divider />
               <PlayerSearch players={players} toggleDrafted={toggleDrafted} />
             </Navbar.Group>
-            <Navbar.Group align={Alignment.RIGHT}>
+          )}
+          <Navbar.Group id="nav-group-right" align={Alignment.RIGHT}>
+            {emptyNav ? null : (
               <Button
                 minimal
                 icon="add"
@@ -36,6 +38,8 @@ const Layout = ({
               >
                 Import
               </Button>
+            )}
+            {emptyNav ? null : (
               <Button
                 minimal
                 icon="reset"
@@ -45,18 +49,18 @@ const Layout = ({
               >
                 Reset
               </Button>
-              <Button
-                minimal
-                icon="git-repo"
-                onClick={() => {
-                  window.open(REPO_URL, '_blank');
-                }}
-              >
-                Doc
-              </Button>
-            </Navbar.Group>
-          </>
-        )}
+            )}
+            <Button
+              minimal
+              icon="git-repo"
+              onClick={() => {
+                window.open(REPO_URL, '_blank');
+              }}
+            >
+              Doc
+            </Button>
+          </Navbar.Group>
+        </>
       </Navbar>
       <div
         style={{
