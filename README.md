@@ -1,10 +1,13 @@
 # [Fantasy Draft Helper](https://www.fantasy.nateconroy.com)
 
 Simple assistant for compiling your rankings and managing your offline fantasy football draft.
-
-Hosted at www.fantasy.nateconroy.com
-
 ![fantasy-draft-helper](assets/screenshot.png)
+
+## Deploy Status
+
+|Branch|Status|Target|
+|------|------|------|
+|`develop`|[![Netlify Status](https://api.netlify.com/api/v1/badges/277023c8-a3d7-4881-a833-f67f2f902d2e/deploy-status)](https://app.netlify.com/sites/festive-kowalevski-594e7e/deploys)|https://www.fantasy.nateconroy.com|
 
 ## Usage
 
