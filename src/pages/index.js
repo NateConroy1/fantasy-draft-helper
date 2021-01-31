@@ -1,5 +1,8 @@
 import React, { useEffect, useState } from 'react';
-import { FocusStyleManager } from '@blueprintjs/core';
+import {
+  AnchorButton, Callout, Classes, Dialog, FocusStyleManager, Intent,
+} from '@blueprintjs/core';
+
 import dataService from '../services';
 
 import 'normalize.css';
@@ -13,14 +16,21 @@ import SEO from '../components/seo';
 
 FocusStyleManager.onlyShowFocusOnTabs();
 
+const MIN_SUGGESTED_WINDOW_WIDTH = 1000;
+
+let windowWidth = MIN_SUGGESTED_WINDOW_WIDTH;
 if (typeof window !== 'undefined') {
   window.dataService = dataService;
+  windowWidth = window.innerWidth;
 }
 
 const IndexPage = () => {
   const [lists, setLists] = useState(dataService.lists);
   const [players, setPlayers] = useState(dataService.players.data);
   const [inLanding, setInLanding] = useState(true);
+
+  const isDesktop = (windowWidth >= MIN_SUGGESTED_WINDOW_WIDTH);
+  const [isWarningOpen, setWarningOpen] = useState(!isDesktop);
 
   const onAddList = (name, list) => {
     dataService.addList(name, list);
@@ -88,6 +98,37 @@ const IndexPage = () => {
             toggleDrafted={toggleDrafted}
           />
         )}
+      <Dialog
+        className="bp3-dark"
+        title="Warning"
+        isOpen={isWarningOpen}
+        canEscapeKeyClose={false}
+        canOutsideClickClose={false}
+        onClose={() => {
+          setWarningOpen(false);
+        }}
+      >
+        <div className={Classes.DIALOG_BODY}>
+          <Callout title="Desktop Recommended" intent={Intent.WARNING}>
+            This tool was not designed for mobile use.
+            It is recommended that you visit the site on desktop.
+          </Callout>
+        </div>
+        <div className={Classes.DIALOG_FOOTER}>
+          <div className={Classes.DIALOG_FOOTER_ACTIONS}>
+            <AnchorButton
+              small
+              minimal
+              intent={Intent.WARNING}
+              onClick={() => {
+                setWarningOpen(false);
+              }}
+            >
+              Continue anyway
+            </AnchorButton>
+          </div>
+        </div>
+      </Dialog>
     </>
   );
 };
