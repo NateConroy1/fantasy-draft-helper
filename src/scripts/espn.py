@@ -38,7 +38,7 @@ teamIdToString = {
 };
 posIdToString = {1: "QB", 2: "RB", 3: "WR", 4: "TE", 5: "K", 16: "DST"};
 
-url_ = "https://fantasy.espn.com/apis/v3/games/ffl/seasons/2022/segments/0/leaguedefaults/3?view=kona_player_info"
+url_ = "https://fantasy.espn.com/apis/v3/games/ffl/seasons/2023/segments/0/leaguedefaults/3?view=kona_player_info"
 headers_ = {"x-fantasy-filter": "{\"players\":{\"filterStatsForExternalIds\":{\"value\":[2021,2022]},\"filterSlotIds\":{\"value\":[0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,23,24]},\"filterStatsForSourceIds\":{\"value\":[0,1]},\"useFullProjectionTable\":{\"value\":true},\"sortAppliedStatTotal\":{\"sortAsc\":false,\"sortPriority\":3,\"value\":\"102022\"},\"sortDraftRanks\":{\"sortPriority\":2,\"sortAsc\":true,\"value\":\"PPR\"},\"sortPercOwned\":{\"sortPriority\":4,\"sortAsc\":false},\"limit\":200,\"filterRanksForSlotIds\":{\"value\":[0,2,4,6,17,16]},\"filterStatsForTopScoringPeriodIds\":{\"value\":2,\"additionalValue\":[\"002022\",\"102022\",\"002021\",\"022022\"]}}}"}
 
 res = requests.get(url_, headers=headers_)
