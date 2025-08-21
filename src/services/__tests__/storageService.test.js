@@ -1,9 +1,8 @@
-import StorageService from '../storage/storageService';
+import storageService from '../storage/storageService';
 import { RankingListsKey, AggregatedListKey, PlayersKey } from '../../util/constants';
 
 describe('StorageService', () => {
   let mockLocalStorage;
-  let storageService;
 
   beforeEach(() => {
     // Create mock localStorage
@@ -27,8 +26,8 @@ describe('StorageService', () => {
       writable: true,
     });
 
-    // Create new instance with mocked localStorage
-    storageService = new StorageService();
+    // Reset the service state
+    storageService.isAvailable = true;
   });
 
   afterEach(() => {
@@ -45,16 +44,16 @@ describe('StorageService', () => {
         throw new Error('Storage disabled');
       });
       
-      const service = new StorageService();
-      expect(service.isAvailable).toBe(false);
+      const available = storageService.checkAvailability();
+      expect(available).toBe(false);
     });
 
     it('should return false when window is undefined', () => {
       const originalWindow = global.window;
       delete global.window;
       
-      const service = new StorageService();
-      expect(service.isAvailable).toBe(false);
+      const available = storageService.checkAvailability();
+      expect(available).toBe(false);
       
       global.window = originalWindow;
     });

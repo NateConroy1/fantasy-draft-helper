@@ -104,11 +104,11 @@ const parsePlayerRow = (line, colIndices, onError) => {
   
   // Parse name
   const nameIdx = colIndices.name;
-  const name = line[nameIdx];
+  const name = (line[nameIdx] || '').trim();
   
   // Parse team
   const teamIdx = colIndices.team;
-  let team = line[teamIdx].toUpperCase();
+  let team = (line[teamIdx] || '').toUpperCase().replace(/[^A-Z]/g, '');
   
   if (!TeamAbbrevs.hasOwnProperty(team)) {
     // Try to determine team for defenses

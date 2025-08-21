@@ -199,7 +199,7 @@ Patrick Mahomes,QB,KC`;
       });
 
       it('should error on missing multiple required columns', () => {
-        const csv = `player,pos,squad
+        const csv = `nam,posi,squad
 Patrick Mahomes,QB,KC`;
 
         const result = parseCSV(csv, mockErrorCallback);
